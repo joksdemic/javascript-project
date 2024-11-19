@@ -95,6 +95,26 @@ function printResults(results, standings) {
     }
 }
 
+function groupTeamsIntoPots(standings) {
+    const sortedTeams = [];
+    for(const group in standings) {
+        sortedTeams.push(...standings[group]);
+    }
+
+    sortedTeams.sort((a, b) => 
+        b.points - a.points || b.pointDifference - a.pointDifference
+    );
+
+    const pots = {
+        D: sortedTeams.slice(0,2),
+        E: sortedTeams.slice(2,4),
+        F: sortedTeams.slice(4,6),
+        G: sortedTeams.slice(6,8)
+    };
+    return pots;
+}
+
 const results = generateGroupStageResults(groups);
 standings = rankTeams(groups, results);
 printResults(results, standings);
+const pots = groupTeamsIntoPots(standings);
