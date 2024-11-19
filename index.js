@@ -1,3 +1,4 @@
+const { match } = require("assert");
 const fs = require("fs");
 const groups = JSON.parse(fs.readFileSync("groups.json","utf-8"));
 
@@ -76,5 +77,24 @@ function rankTeams(groups, results) {
     return standings;
 }
 
+function printResults(results, standings) {
+    console.log("Grupna faza: I kolo:");
+    for(const[group, matches] of Object.entries(results)) {
+        console.log(`   Grupa ${group}:`);
+        matches.forEach((match) => {
+            console.log(`   ${match.teamA} - ${match.teamB} (${match.scoreTeamA}:${match.scoreTeamB})`);
+        });
+    }
+
+    console.log("\nKonacan plasman u grupama:\n");
+    for(const[group, teams] of Object.entries(standings)) {
+        console.log(`   Grupa ${group} (Ime- pobede/porazi/bodovi/postignuti kosevi/primljeni kosevi/kos razlika)`);
+        teams.forEach((team, index) => {
+            console.log(`   ${index + 1}. ${team.team.padEnd(10)} ${team.wins} / ${team.losses} / ${team.points} / ${team.points} / ${team.scored} / ${team.pointDifference >= 0 ? "+" : ""}${team.pointDifference}`);
+        });
+    }
+}
+
 const results = generateGroupStageResults(groups);
 standings = rankTeams(groups, results);
+printResults(results, standings);
