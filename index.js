@@ -27,4 +27,54 @@ function generateGroupStageResults(groups) {
     return results;
 }
 
+function rankTeams(groups, results) {
+    const standings = {};
+    for(const[group, matches] of Object.entries(results)) {
+        const teams = groups[group];
+        const teamStats = teams.reduce((teanRecords, team) => {
+            teanRecords[team.Team] = {
+                wins: 0,
+                losses: 0,
+                points: 0,
+                scored: 0,
+                conceded: 0
+            };
+            return teanRecords;
+        }, {});
+        matches.forEach((match) => {
+            const{teamA, teamB, scoreTeamA, scoreTeamB} = match;
+            teamStats[teamA].scored += scoreTeamA;
+            teamStats[teamA].conceded += scoreTeamB;
+            teamStats[teamB].scored += scoreTeamB;
+            teamStats[teamB].conceded += scoreTeamA;
+
+            if(scoreTeamA > scoreTeamB) {
+                teamStats[teamA].wins++;
+                teamStats[teamB].losses++;
+                teamStats[teamA].points += 2;
+                teamStats[teamB].points += 1;
+            }else{
+                teamStats[teamB].wins++;
+                teamStats[teamA].losses++;
+                teamStats[teamB].points += 2;
+                teamStats[teamA].points += 1;
+            }
+        });
+
+        standings[group] = Object.entries(teamStats) 
+            .map(([team, stats]) => {
+                return {
+                    team,
+                    ...stats,
+                    pointDifference: stats.scored - stats.conceded
+                };
+            })
+            .sort((a,b) =>
+                b.points - a.points || b.pointDifference - a.pointDifference || b.scored - a.scored
+            );
+    }
+    return standings;
+}
+
 const results = generateGroupStageResults(groups);
+standings = rankTeams(groups, results);
