@@ -114,7 +114,61 @@ function groupTeamsIntoPots(standings) {
     return pots;
 }
 
+function simulateEliminationStage(pots) {
+    console.log("\nSesiri:");
+    for(const pot in pots) {
+        console.log(`   Sesir ${pot}:`);
+        pots[pot].forEach((team) => console.log(`   ${team.team}`));
+    }
+
+    const quaterFinals = [
+        {team1: pots.D[0], team2: pots.G[0]},
+        {team1: pots.D[1], team2: pots.G[1]},
+        {team1: pots.E[0], team2: pots.F[0]},
+        {team1: pots.E[1], team2: pots.F[1]}
+    ];
+
+    console.log("\nCetvrtfinale:");
+    const semiFinals = [];
+    quaterFinals.forEach((match) => {
+        const result = generateMatchResults(match.team1, match.team2);
+        console.log(`   ${match.team1.team} - ${match.team2.team}: (${result.scoreTeamA} : ${result.scoreTeamB})`);
+        if(result.scoreTeamA > result.scoreTeamB) {
+            semiFinals.push(match.team1);
+        }else{
+            semiFinals.push(match.team2);
+        }
+    });
+
+    const finals = [];
+    thirdPlaceMatch = [];
+    console.log("\nPolufinale:");
+    for(let i = 0; i < semiFinals.length; i += 2) {
+        const result = generateMatchResults(semiFinals[i], semiFinals[i + 1]);
+        console.log(`   ${semiFinals[i].team} - ${semiFinals[i + 1].team}: (${result.scoreTeamA} : ${result.scoreTeamB})`);
+        if(result.scoreTeamA > result.scoreTeamB) {
+            finals.push(semiFinals[i]);
+            thirdPlaceMatch.push(semiFinals[i + 1]);
+        }else{
+            finals.push(semiFinals[i + 1]);
+            thirdPlaceMatch.push(semiFinals[i]);
+        }
+    }
+
+    const thirdPlaceResult = generateMatchResults(thirdPlaceMatch[0], thirdPlaceMatch[1]);
+    console.log(`\nUtakmica za 3. mesto: \n     ${thirdPlaceMatch[0].team} - ${thirdPlaceMatch[1].team} (${thirdPlaceResult.scoreTeamA} : ${thirdPlaceResult.scoreTeamB})`);
+
+    const finalResult = generateMatchResults(finals[0], finals[1]);
+    console.log(`\nFinale: \n   ${finals[0].team} - ${finals[1].team}: (${finalResult.scoreTeamA} : ${finalResult.scoreTeamB})`);
+
+    console.log("\nMedalje:");
+    console.log(`   1. ${finalResult.scoreTeamA > finalResult.scoreTeamB ? finals[0].team : finals[1].team}`);
+    console.log(`   2. ${finalResult.scoreTeamA > finalResult.scoreTeamB ? finals[1].team : finals[0].team}`);
+    console.log(`   3. ${thirdPlaceResult.scoreTeamA > thirdPlaceResult.scoreTeamB ? thirdPlaceResult[0].team : thirdPlaceResult[1].team}`);
+}
+
 const results = generateGroupStageResults(groups);
 standings = rankTeams(groups, results);
 printResults(results, standings);
 const pots = groupTeamsIntoPots(standings);
+simulateEliminationStage(pots);
