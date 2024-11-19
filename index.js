@@ -164,7 +164,7 @@ function simulateEliminationStage(pots) {
     console.log("\nMedalje:");
     console.log(`   1. ${finalResult.scoreTeamA > finalResult.scoreTeamB ? finals[0].team : finals[1].team}`);
     console.log(`   2. ${finalResult.scoreTeamA > finalResult.scoreTeamB ? finals[1].team : finals[0].team}`);
-    console.log(`   3. ${thirdPlaceResult.scoreTeamA > thirdPlaceResult.scoreTeamB ? thirdPlaceResult[0].team : thirdPlaceResult[1].team}`);
+    console.log(`   3. ${thirdPlaceResult.scoreTeamA > thirdPlaceResult.scoreTeamB ? thirdPlaceMatch[0].team : thirdPlaceMatch[1].team}`);
 }
 
 const results = generateGroupStageResults(groups);
